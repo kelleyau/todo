@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% set active_page = "viewlist" %}
+
+{% block head %}
+		<title>{{todolist.name}}</title>
+
+{% endblock %}
+
+{% block body %}
+		<div class="container-sm mt-4 centered">
+			<h1 class="MainHeading display-inline">{{todolist.name}}
+			<form action="/removeList/{{todolist.id}}" method="post" id="form4">
+			</form>
+			<button type="submit" form="form4" class="btn btn-danger">Delete List</button>
+			</h1>
+			<br>
+			Click on the todo item to "Mark Done" or Delete item when done.
+			<div class="container">
+				<div class="form-inline">
+				<form action="/addItem/{{ todolist.id }}" method="post" id="form1">
+					<input placeholder="Add an item to your todo list!" name="newitem" id="NewItemInput">
+				</form>
+				<button type="submit" class="btn btn-success" form="form1" value="Submit">Add Item</button> 
+				</div>
+			</div>
+			<br><br>
+			<h2>
+			<ul id="TodoList">
+				{% for item in todolist.items %}
+					<li>
+						{% if item.completed == False %}
+							<div class="item-value" id="{{item.id}}">{{item.description}}</div>
+							<div style="display:none" class="edit-item" id="EDIT-{{item.id}}">
+								<div class="form-inline">
+								<span>{{item.description}}  <-----  </span>
+								<form action="/completeItem/{{todolist.id}}/{{item.id}}" method="post" id="form2-{{item.id}}">
+								</form>
+								<button id="MARK-{{item.id}}" type="submit" form="form2-{{item.id}}" class="btn btn-primary">Mark Done</button>
+								<button id="CANCEL-{{item.id}}" class="btn btn-danger">Cancel</button>
+								</div>
+							</div>
+						{% else %}
+							<div class="item-value" id="{{item.id}}"><strike>{{item.description}}</strike></div>
+							<div style="display:none" class="edit-item" id="EDIT-{{item.id}}">
+								<div class="form-inline">
+								<span>{{item.description}}  <-----  </span>
+								<form action="/removeItem/{{todolist.id}}/{{item.id}}" method="post" id="form3-{{item.id}}">
+								</form>
+								<button id="MARK-{{item.id}}" type="submit" form="form3-{{item.id}}" class="btn btn-primary">Delete</button>
+								<button id="CANCEL-{{item.id}}" class="btn btn-danger">Cancel</button>
+								</div>
+							</div>
+							{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+			</h2>
+		</div>
+		<script>
+
+			$(".item-value").click(function(){
+				
+				$(".edit-item").css({"display":"none"})
+				$(".item-value").css({"display":"inline-block"})
+
+				var itemDescriptionEle = $(this)
+				var itemNum = itemDescriptionEle.attr('id')
+				var itemChangeEle = $("#INPUT-"+itemNum)
+				console.log(itemNum)
+
+				itemDescriptionEle.css({"display":"none"})
+				itemChangeEle.val(itemDescriptionEle.text())
+
+				$("#EDIT-"+itemNum).css({"display":"inline-block"})
+
+				$("#CANCEL-"+itemNum).click({num:itemNum},closeEdit)
+				
+            })
+            function closeEdit(event){
+				var itemNum = event.data.num
+
+				$("#EDIT-"+itemNum).css({"display":"none"})
+				$("#"+itemNum).css({"display":"inline-block"})
+            }
+            
+		</script>
+{% endblock %}

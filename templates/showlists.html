@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% set active_page = "lists" %}
+
+{% block head %}
+		<title>My Todo Lists</title>
+		
+{% endblock %}
+{% block body %}
+		<div class="container-sm mt-4-left">
+			<h1 class="MainHeading">My Lists:</h1>
+			<br><br>
+			<h2>
+			<ul id="TodoList">
+				{% for item in todolists %}
+					<li><a href="{{url_for('viewList',listid=item.id)}}">{{item.name}}</a></li>
+				{% endfor %}
+			</ul>
+			</h2>
+			<br><br>
+			<div class="container">
+				<div class="form-inline">
+				<form action="/addlist" method="post" id="form1">
+					<input placeholder="Create new list" name="newlist" id="NewListInput">
+				</form>
+				<button type="submit" class="btn btn-success" form="form1" value="Submit">Create</button> 
+				</div>
+			</div>
+			</script>
+		</div>
+{% endblock %}
